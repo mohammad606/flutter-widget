@@ -45,26 +45,20 @@ app/
 
 ## التشغيل محليًا
 
-1. افتح المجلد المشروع
-2. ثبت الحزم:
+### 1) تحميل المشروع
+
+```bash
+git clone https://github.com/mohammad606/flutter-widget.git
+cd flutter-widget
+```
+
+### 2) تثبيت الحزم
 
 ```bash
 npm install
 ```
 
-3. شغّل المشروع:
-
-```bash
-npm run dev
-```
-
-4. افتح المتصفح على:
-
-```bash
-http://localhost:3000
-```
-
-## إعداد Firebase
+### 3) إعداد Firebase
 
 أنشئ ملف `.env.local` في جذر المشروع، ثم أضف القيم التالية:
 
@@ -76,6 +70,26 @@ NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=YOUR_PROJECT.firebasestorage.app
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=YOUR_SENDER_ID
 NEXT_PUBLIC_FIREBASE_APP_ID=YOUR_APP_ID
 ```
+
+### 4) تشغيل المشروع
+
+```bash
+npm run dev
+```
+
+### 5) فتح المشروع
+
+افتح المتصفح على:
+
+```bash
+http://localhost:3000
+```
+
+## الموقع المباشر
+
+يمكنك معاينة المشروع مباشرة عبر:
+
+https://flutter-widget.vercel.app/
 
 ## Firebase Authentication
 
@@ -112,12 +126,7 @@ widgets
 - عند اختيار اسم من قائمة الاقتراحات، يتم عرض بطاقة واحدة فقط
 - لوحة الإدارة محمية وتحتاج تسجيل دخول صحيح
 
-## GitHub
+## رابط المشروع
 
-يمكنك رفع المشروع إلى مستودع GitHub باستخدام الأمر:
-
-```bash
-git add .
-git commit -m "Initial project commit"
-git push origin master
-```
+- الموقع المباشر: https://flutter-widget.vercel.app/
+- المستودع: https://github.com/mohammad606/flutter-widget
