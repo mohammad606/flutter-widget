@@ -2,22 +2,26 @@ import type { FormEvent } from "react";
 
 type AddWidgetFormProps = {
   widgetName: string;
+  description: string;
   code: string;
   error: string;
   message: string;
   isSubmitting: boolean;
   onNameChange: (value: string) => void;
+  onDescriptionChange: (value: string) => void;
   onCodeChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void | Promise<void>;
 };
 
 export function AddWidgetForm({
   widgetName,
+  description,
   code,
   error,
   message,
   isSubmitting,
   onNameChange,
+  onDescriptionChange,
   onCodeChange,
   onSubmit,
 }: AddWidgetFormProps) {
@@ -30,6 +34,17 @@ export function AddWidgetForm({
           value={widgetName}
           onChange={(e) => onNameChange(e.target.value)}
           placeholder="مثل: Text"
+          className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
+        />
+      </div>
+
+      <div>
+        <label className="mb-2 block text-sm text-slate-300">وصف الودجت</label>
+        <textarea
+          value={description}
+          onChange={(e) => onDescriptionChange(e.target.value)}
+          rows={4}
+          placeholder="اكتب شرحًا مختصرًا عن الهدف والاستخدام..."
           className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
         />
       </div>

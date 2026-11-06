@@ -50,7 +50,7 @@ export default function Home() {
             level: "Widget",
             name: String(data.name || "Widget"),
             arabicName: "",
-            description: "",
+            description: String(data.description || "لا يوجد وصف متاح لهذا الودجت."),
             code: String(data.code || ""),
             icon: (String(data.name || "W").charAt(0) || "W").toUpperCase(),
           };

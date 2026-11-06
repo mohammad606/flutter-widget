@@ -26,6 +26,7 @@ const defaultCode = ``;
 
 export default function AddWidgetPage() {
   const [widgetName, setWidgetName] = useState("");
+  const [description, setDescription] = useState("");
   const [code, setCode] = useState(defaultCode);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -46,6 +47,7 @@ export default function AddWidgetPage() {
       const items = snapshot.docs.map((docSnap) => ({
         id: docSnap.id,
         name: String(docSnap.data().name || "Widget"),
+        description: String(docSnap.data().description || ""),
       }));
 
       setWidgets(items);
@@ -141,6 +143,12 @@ export default function AddWidgetPage() {
       return;
     }
 
+    if (!description.trim()) {
+      setError("يرجى كتابة وصف الودجت.");
+      setMessage("");
+      return;
+    }
+
     if (!code.trim()) {
       setError("يرجى كتابة كود الودجت.");
       setMessage("");
@@ -162,12 +170,14 @@ export default function AddWidgetPage() {
 
       await addDoc(collection(db, "widgets"), {
         name: widgetName.trim(),
+        description: description.trim(),
         code: code.trim(),
         createdAt: serverTimestamp(),
       });
 
       setMessage("تمت إضافة الودجت بنجاح إلى Firestore.");
       setWidgetName("");
+      setDescription("");
       setCode(defaultCode);
       await loadWidgets();
     } catch (submitError) {
@@ -235,11 +245,13 @@ export default function AddWidgetPage() {
 
             <AddWidgetForm
               widgetName={widgetName}
+              description={description}
               code={code}
               error={error}
               message={message}
               isSubmitting={isSubmitting}
               onNameChange={setWidgetName}
+              onDescriptionChange={setDescription}
               onCodeChange={setCode}
               onSubmit={handleSubmit}
             />
