@@ -46,11 +46,11 @@ export default function Home() {
           const data = doc.data();
 
           return {
-            category: "Firestore",
-            level: "Custom",
+            category: String(data.name || "Widget"),
+            level: "Widget",
             name: String(data.name || "Widget"),
-            arabicName: "ودجت جديدة",
-            description: "تمت إضافتها من النموذج إلى Firestore.",
+            arabicName: "",
+            description: "",
             code: String(data.code || ""),
             icon: (String(data.name || "W").charAt(0) || "W").toUpperCase(),
           };
@@ -93,21 +93,23 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#0b1020] px-4 py-10 text-white">
       <div className="mx-auto max-w-4xl">
-        <header className="mb-8 text-center">
-          <p className="mb-3 text-sm uppercase tracking-[0.35em] text-cyan-300">
-            Flutter
-          </p>
-          <h1 className="text-4xl font-bold md:text-5xl">Widgets Guide</h1>
-        </header>
+        <header className="mb-8">
+          <div className="mb-6 flex justify-start">
+            <Link
+              href="/addwidgetpage"
+              className="rounded-full bg-cyan-400 px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
+            >
+              إضافة ويدجت جديدة
+            </Link>
+          </div>
 
-        <div className="mb-6 flex justify-center">
-          <Link
-            href="/addwidgetpage"
-            className="rounded-full bg-cyan-400 px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
-          >
-            إضافة ويدجت جديدة
-          </Link>
-        </div>
+          <div className="text-center">
+            <p className="mb-3 text-sm uppercase tracking-[0.35em] text-cyan-300">
+              Flutter
+            </p>
+            <h1 className="text-4xl font-bold md:text-5xl">Widgets Guide</h1>
+          </div>
+        </header>
 
         <SearchBox value={search} onChange={setSearch} />
         <WidgetSuggestions

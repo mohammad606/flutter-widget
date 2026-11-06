@@ -16,7 +16,11 @@ import {
   User,
 } from "firebase/auth";
 import { FormEvent, useEffect, useState } from "react";
+import { AddWidgetForm } from "./components/AddWidgetForm";
+import { LoginForm } from "./components/LoginForm";
+import { WidgetList } from "./components/WidgetList";
 import { auth, db } from "../lib/firebase";
+import type { WidgetItem } from "./types";
 
 const defaultCode = ``;
 
@@ -26,7 +30,7 @@ export default function AddWidgetPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [widgets, setWidgets] = useState<Array<{ id: string; name: string }>>([]);
+  const [widgets, setWidgets] = useState<WidgetItem[]>([]);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState("");
   const [user, setUser] = useState<User | null>(null);
@@ -204,154 +208,41 @@ export default function AddWidgetPage() {
         </div>
 
         {!user ? (
-          <section className="mb-8 rounded-2xl border border-cyan-500/30 bg-slate-950/70 p-5">
-            <h2 className="mb-4 text-xl font-bold text-cyan-300">تسجيل الدخول للإدارة</h2>
-
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="mb-2 block text-sm text-slate-300">البريد الإلكتروني</label>
-                <input
-                  type="email"
-                  value={loginEmail}
-                  onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="admin@example.com"
-                  className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm text-slate-300">كلمة المرور</label>
-                <input
-                  type="password"
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  placeholder="أدخل كلمة المرور"
-                  className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
-                />
-              </div>
-
-              {loginError ? (
-                <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-                  {loginError}
-                </p>
-              ) : null}
-
-              <button
-                type="submit"
-                className="w-full rounded-2xl bg-cyan-400 px-5 py-3 text-base font-bold text-slate-950 transition hover:bg-cyan-300"
-              >
-                تسجيل الدخول
-              </button>
-            </form>
-          </section>
+          <LoginForm
+            loginEmail={loginEmail}
+            loginPassword={loginPassword}
+            loginError={loginError}
+            onEmailChange={setLoginEmail}
+            onPasswordChange={setLoginPassword}
+            onSubmit={handleLogin}
+          />
         ) : (
           <>
-            <section className="mb-8 rounded-2xl border border-slate-700 bg-slate-950/60 p-5">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h2 className="text-lg font-semibold text-white">كل الودجت الحالية</h2>
-                <span className="rounded-full border border-cyan-400/40 bg-cyan-400/10 px-2.5 py-1 text-xs text-cyan-300">
-                  {widgets.length} عنصر
-                </span>
-              </div>
+            <WidgetList
+              widgets={widgets}
+              deleteTargetId={deleteTargetId}
+              deleteError={deleteError}
+              onDeleteRequest={(id) => {
+                setDeleteTargetId(id);
+                setDeleteError("");
+              }}
+              onConfirmDelete={handleDeleteWidget}
+              onCancelDelete={() => {
+                setDeleteTargetId(null);
+                setDeleteError("");
+              }}
+            />
 
-              {widgets.length === 0 ? (
-                <p className="text-sm text-slate-400">لا توجد ويدجت مضافة حتى الآن.</p>
-              ) : (
-                <div className="space-y-3">
-                  {widgets.map((widget) => (
-                    <div key={widget.id} className="rounded-2xl border border-slate-700 bg-slate-900 p-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="font-medium text-slate-100">{widget.name}</p>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setDeleteTargetId(widget.id);
-                            setDeleteError("");
-                          }}
-                          className="rounded-full border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-300 transition hover:bg-red-500/20"
-                        >
-                          حذف
-                        </button>
-                      </div>
-
-                      {deleteTargetId === widget.id ? (
-                        <div className="mt-3 rounded-xl border border-slate-700 bg-slate-950 p-3">
-                          <p className="mb-3 text-xs text-slate-300">
-                            سيتم حذف الودجت بعد تأكيدك.
-                          </p>
-                          <div className="flex flex-col gap-2 sm:flex-row">
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteWidget(widget.id)}
-                              className="rounded-xl bg-red-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-red-400"
-                            >
-                              تأكيد الحذف
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setDeleteTargetId(null);
-                                setDeleteError("");
-                              }}
-                              className="rounded-xl border border-slate-600 bg-slate-800 px-4 py-2 text-sm text-slate-300"
-                            >
-                              إلغاء
-                            </button>
-                          </div>
-
-                          {deleteError ? (
-                            <p className="mt-2 text-xs text-red-300">{deleteError}</p>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="mb-2 block text-sm text-slate-300">اسم الودجت</label>
-                <input
-                  type="text"
-                  value={widgetName}
-                  onChange={(e) => setWidgetName(e.target.value)}
-                  placeholder="مثل: Text"
-                  className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm text-slate-300">الكود الخاص بالودجت</label>
-                <textarea
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  rows={16}
-                  className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-cyan-300 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
-                />
-              </div>
-
-              {error ? (
-                <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-                  {error}
-                </p>
-              ) : null}
-
-              {message ? (
-                <p className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
-                  {message}
-                </p>
-              ) : null}
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded-2xl bg-cyan-400 px-5 py-3 text-base font-bold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isSubmitting ? "جاري الإرسال..." : "إضافة الودجت"}
-              </button>
-            </form>
+            <AddWidgetForm
+              widgetName={widgetName}
+              code={code}
+              error={error}
+              message={message}
+              isSubmitting={isSubmitting}
+              onNameChange={setWidgetName}
+              onCodeChange={setCode}
+              onSubmit={handleSubmit}
+            />
           </>
         )}
       </div>
